@@ -3,7 +3,24 @@ package Win32::File::Next;
 use strict;
 use warnings;
 
-our $VERSION = "0.001000";
+use Win32::LongPath;
+
+$Win32::File::Next::VERSION = "0.001_000";
+
+
+
+sub everything {
+    #croak if $_[0] eq __PACKAGE__
+    #shift options
+
+    #for(@_) {
+        my $dir_obj = Win32::LongPath->new();
+        $dir_obj->opendirL(shift);
+        my @a = $dir_obj->readdirL();
+        $dir_obj->closedirL($_);
+        return @a;
+    #}
+}
 
 
 
