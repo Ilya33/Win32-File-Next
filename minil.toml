@@ -1,0 +1,6 @@
+name = "Win32-File-Next"
+# badges = ["travis"]
+authority="cpan:ILUX"
+
+module_maker="ModuleBuildTiny"
+
