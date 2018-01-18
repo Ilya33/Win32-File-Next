@@ -27,7 +27,6 @@ my %skip_dirs = (
     File::Spec->updir => undef
 );
 my %default_params = (
-    file_filter     => undef,
     descend_filter  => undef,
     error_handler   => sub { CORE::die $_[0] },
     warning_handler => sub { CORE::warn @_ }
@@ -40,7 +39,7 @@ my %default_params = (
 
 
 sub files {
-    #croak if $_[0] eq __PACKAGE__
+    croak "Wrong usage" if defined($_[0]) && $_[0] eq __PACKAGE__;
 
     my $params = {%default_params, (ref($_[0]) eq 'HASH' ?%{+shift} :())};
 
@@ -59,19 +58,27 @@ sub files {
         while(@queue) {
             my ($dir, $file, $fullpath) = splice(@queue, 0, 3);
 
-            if(testL('f', $fullpath)) {
+            if(testL('f', $fullpath)) { #if bad FS?
                 return wantarray ?($dir, $file, $fullpath) :$fullpath;
             }
 
             if(testL('d', $fullpath)) {
                 my $dir_obj = Win32::LongPath->new();
-                $dir_obj->opendirL($fullpath);
 
-                unshift @queue, map { (
-                    $fullpath,
-                    $_,
-                    $fullpath.'/'.$_
-                ) } grep {$_ !~ /^\.\.?$/} $dir_obj->readdirL();
+                if(!$dir_obj->opendirL($fullpath)) {
+                    $parms->{error_handler}->( "$fullpath: $!", $! +0 );
+                    next;
+                }
+
+                for my $item ( grep { !exists $skip_dirs{$_} } $dir_obj->readdirL() ) {
+                    if(defined $params->{descend_filter}) {
+                        local $Win32::File::Next::dir = $fullpath.'/'.$item;
+                        local $_ = $item;
+                        next if not $params->{descend_filter}->();
+                    }
+
+                    unshift @queue, ($fullpath, $item, $fullpath.'/'.$item);
+                }
 
                 $dir_obj->closedirL();
             }
@@ -89,11 +96,13 @@ sub files {
 
 __END__
 
+
+
 =encoding utf-8
 
 =head1 NAME
 
-Win32::File::Next - It's new $module
+Win32::File::Next - File-finding iterator for Windows
 
 =head1 SYNOPSIS
 
@@ -103,15 +112,19 @@ Win32::File::Next - It's new $module
 
 Win32::File::Next is ...
 
+=head1 SEE ALSO
+
+L<File::Next>
+
+=head1 AUTHOR
+
+Ilya Pavlov E<lt>ilux@cpan.orgE<gt>
+
 =head1 LICENSE
 
 Copyright (C) Ilya Pavlov.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
-
-=head1 AUTHOR
-
-Ilya Pavlov E<lt>ilux@cpan.orgE<gt>
 
 =cut

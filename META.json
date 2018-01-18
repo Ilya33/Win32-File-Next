@@ -1,7 +1,7 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "File-finding iterator for Windows",
    "author" : [
-      "Ilya Pavlov <iluxz@mail.ru>"
+      "Ilya Pavlov <ilux@cpan.org>"
    ],
    "dynamic_config" : 0,
    "generated_by" : "Minilla/v3.0.13, CPAN::Meta::Converter version 2.150010",
@@ -42,6 +42,7 @@
       },
       "runtime" : {
          "requires" : {
+            "Win32::LongPath" : "1.06",
             "perl" : "5.008001"
          }
       },
@@ -52,7 +53,21 @@
       }
    },
    "release_status" : "unstable",
-   "version" : "0.01",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/Ilya33/Win32-File-Next/issues"
+      },
+      "homepage" : "https://github.com/Ilya33/Win32-File-Next",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/Ilya33/Win32-File-Next.git",
+         "web" : "https://github.com/Ilya33/Win32-File-Next"
+      }
+   },
+   "version" : "0.001000",
    "x_authority" : "cpan:ILUX",
+   "x_contributors" : [
+      "Ilya Pavlov <iluxz@mail.ru>"
+   ],
    "x_serialization_backend" : "JSON::PP version 2.27400"
 }
