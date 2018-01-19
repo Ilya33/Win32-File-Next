@@ -66,7 +66,7 @@ sub files {
                 my $dir_obj = Win32::LongPath->new();
 
                 if(!$dir_obj->opendirL($fullpath)) {
-                    $parms->{error_handler}->( "$fullpath: $!", $! +0 );
+                    $params->{error_handler}->( "$fullpath: $!", $! +0 );
                     next;
                 }
 
